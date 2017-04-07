@@ -36,6 +36,7 @@ namespace FSM{
 		/// </summary>
 		public LStateMachine(string name,IState defaultState) : base (name){
 			_states = new List<IState> ();
+            _anyStateTransitions = new List<ITransition>();
 			_defaultState = defaultState;
 		}
 
@@ -112,14 +113,27 @@ namespace FSM{
 					_isTransition = false;
 				}
 				return;
-			}
+            }
 
-			base.UpdateCallback (deltaTime);
+            base.UpdateCallback (deltaTime);
+
+            int count = _anyStateTransitions.Count;
+            for (int i = 0; i < count; i++)
+            {
+                ITransition t = _anyStateTransitions [i];
+                if (t.ShouldBengin())
+                {
+                    _isTransition = true;
+                    _t = t;
+                    return;
+                }
+            }
+
 			if (_currentState == null) {
 				_currentState = _defaultState;
 			}
 			List<ITransition> ts = _currentState.Transitions;
-			int count = ts.Count;
+			count = ts.Count;
 			for (int i = 0; i < count; i++) {
 				ITransition t = ts [i];
 				if (t.ShouldBengin()) {
@@ -144,12 +158,25 @@ namespace FSM{
 				}
 				return;
 			}
-			base.LateUpdateCallback (deltaTime);
+            base.LateUpdateCallback (deltaTime);
+
+            int count = _anyStateTransitions.Count;
+            for (int i = 0; i < count; i++)
+            {
+                ITransition t = _anyStateTransitions [i];
+                if (t.ShouldBengin())
+                {
+                    _isTransition = true;
+                    _t = t;
+                    return;
+                }
+            }
+
 			if (_currentState == null) {
 				_currentState = _defaultState;
 			}
 			List<ITransition> ts = _currentState.Transitions;
-			int count = ts.Count;
+			count = ts.Count;
 			for (int i = 0; i < count; i++) {
 				ITransition t = ts [i];
 				if (t.ShouldBengin()) {
@@ -173,12 +200,25 @@ namespace FSM{
 				}
 				return;
 			}
-			base.FixedUpdateCallback ();
+            base.FixedUpdateCallback ();
+
+            int count = _anyStateTransitions.Count;
+            for (int i = 0; i < count; i++)
+            {
+                ITransition t = _anyStateTransitions [i];
+                if (t.ShouldBengin())
+                {
+                    _isTransition = true;
+                    _t = t;
+                    return;
+                }
+            }
+
 			if (_currentState == null) {
 				_currentState = _defaultState;
 			}
 			List<ITransition> ts = _currentState.Transitions;
-			int count = ts.Count;
+			count = ts.Count;
 			for (int i = 0; i < count; i++) {
 				ITransition t = ts [i];
 				if (t.ShouldBengin()) {
@@ -190,12 +230,17 @@ namespace FSM{
 			_currentState.FixedUpdateCallback ();
 		}
 
+        private IState _tempState;
 		// 开始进行过渡
 		private void DoTransition(ITransition t){
+            _tempState = _currentState;
 			_currentState.ExitCallback (t.To);
 			_currentState = t.To;
-			_currentState.EnterCallback (t.From);
-			
+            if (t.From != null)
+            {
+                _tempState = t.From;
+            }
+            _currentState.EnterCallback(_tempState);
 		}
 
 		private IState _currentState;	// 当前状态
@@ -205,5 +250,15 @@ namespace FSM{
 
 		private bool _isTransition=false;	// 是否在过渡
 		private ITransition _t;			// 当前正在执行的过渡
+
+        private List<ITransition> _anyStateTransitions;     // 任何状态下的过渡
+
+        public void AddAnyState(ITransition t)
+        {
+            if (_anyStateTransitions.Contains(t))
+                return;
+            t.From = null;
+            _anyStateTransitions.Add(t);
+        }
 	}
 }
