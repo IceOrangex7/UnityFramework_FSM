@@ -37,5 +37,10 @@ namespace FSM{
 		/// <returns> 查找到的状态 </returns>
 		/// <param name="tag"> 状态的 Tag 值 </param>
 		IState GetStateWithTag(string tag);
+
+        /// <summary>
+        /// 添加任意状态切换过渡
+        /// </summary>
+        void AddAnyState(ITransition t);
 	}
 }

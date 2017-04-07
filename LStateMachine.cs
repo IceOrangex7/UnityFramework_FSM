@@ -121,7 +121,7 @@ namespace FSM{
             for (int i = 0; i < count; i++)
             {
                 ITransition t = _anyStateTransitions [i];
-                if (t.ShouldBengin())
+                if (t.To!= _currentState && t.ShouldBengin())
                 {
                     _isTransition = true;
                     _t = t;
@@ -164,7 +164,7 @@ namespace FSM{
             for (int i = 0; i < count; i++)
             {
                 ITransition t = _anyStateTransitions [i];
-                if (t.ShouldBengin())
+                if (t.To!= _currentState && t.ShouldBengin())
                 {
                     _isTransition = true;
                     _t = t;
@@ -206,7 +206,7 @@ namespace FSM{
             for (int i = 0; i < count; i++)
             {
                 ITransition t = _anyStateTransitions [i];
-                if (t.ShouldBengin())
+                if (t.To!= _currentState && t.ShouldBengin())
                 {
                     _isTransition = true;
                     _t = t;
