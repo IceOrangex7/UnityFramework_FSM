@@ -118,6 +118,11 @@ namespace FSM{
             base.UpdateCallback (deltaTime);
 
             int count = _anyStateTransitions.Count;
+
+            if (_currentState == null) {
+                _currentState = _defaultState;
+            }
+
             for (int i = 0; i < count; i++)
             {
                 ITransition t = _anyStateTransitions [i];
@@ -129,9 +134,6 @@ namespace FSM{
                 }
             }
 
-			if (_currentState == null) {
-				_currentState = _defaultState;
-			}
 			List<ITransition> ts = _currentState.Transitions;
 			count = ts.Count;
 			for (int i = 0; i < count; i++) {
@@ -160,6 +162,10 @@ namespace FSM{
 			}
             base.LateUpdateCallback (deltaTime);
 
+            if (_currentState == null) {
+                _currentState = _defaultState;
+            }
+
             int count = _anyStateTransitions.Count;
             for (int i = 0; i < count; i++)
             {
@@ -171,10 +177,6 @@ namespace FSM{
                     return;
                 }
             }
-
-			if (_currentState == null) {
-				_currentState = _defaultState;
-			}
 			List<ITransition> ts = _currentState.Transitions;
 			count = ts.Count;
 			for (int i = 0; i < count; i++) {
@@ -202,6 +204,10 @@ namespace FSM{
 			}
             base.FixedUpdateCallback ();
 
+            if (_currentState == null) {
+                _currentState = _defaultState;
+            }
+
             int count = _anyStateTransitions.Count;
             for (int i = 0; i < count; i++)
             {
@@ -214,9 +220,6 @@ namespace FSM{
                 }
             }
 
-			if (_currentState == null) {
-				_currentState = _defaultState;
-			}
 			List<ITransition> ts = _currentState.Transitions;
 			count = ts.Count;
 			for (int i = 0; i < count; i++) {
